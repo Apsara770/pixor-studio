@@ -24,17 +24,9 @@
     --shadow: rgba(28,25,22,0.08);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--text);
-    overflow-x: hidden;
-  }
-
-  /* ─── NOISE TEXTURE OVERLAY ─── */
   body::before {
     content: '';
     position: fixed; inset: 0;
@@ -44,11 +36,12 @@
 
   /* ─── NAV ─── */
   nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
     display: flex; align-items: center; justify-content: space-between;
     padding: 1.4rem 4rem;
-    background: rgba(250,248,245,0.88);
-    backdrop-filter: blur(16px);
+    background: rgba(250,248,245,0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     transition: padding 0.4s ease, box-shadow 0.4s ease;
   }
@@ -57,7 +50,7 @@
   .nav-logo {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.7rem; font-weight: 500; letter-spacing: 0.04em;
-    color: var(--dark); text-decoration: none;
+    color: var(--dark); text-decoration: none; position: relative; z-index: 201;
   }
   .nav-logo span { color: var(--accent); font-style: italic; }
 
@@ -84,8 +77,107 @@
   .nav-cta:hover { background: var(--accent) !important; color: var(--cream) !important; }
   .nav-cta::after { display: none !important; }
 
-  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
-  .hamburger span { display: block; width: 24px; height: 1.5px; background: var(--dark); transition: all 0.3s; }
+  /* ─── HAMBURGER (animated X) ─── */
+  .hamburger {
+    display: none;
+    flex-direction: column; gap: 0; cursor: pointer;
+    background: none; border: none; padding: 8px;
+    width: 44px; height: 44px;
+    align-items: center; justify-content: center;
+    position: relative; z-index: 201;
+  }
+  .hamburger span {
+    display: block; width: 22px; height: 1.5px;
+    background: var(--dark); transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-origin: center; position: absolute;
+  }
+  .hamburger span:nth-child(1) { transform: translateY(-6px); }
+  .hamburger span:nth-child(2) { transform: translateY(0); }
+  .hamburger span:nth-child(3) { transform: translateY(6px); }
+
+  /* When open – animate to X */
+  .hamburger.open span:nth-child(1) { transform: rotate(45deg) translateY(0); background: var(--cream); }
+  .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translateY(0); background: var(--cream); }
+
+  /* ─── MOBILE FULLSCREEN OVERLAY MENU ─── */
+  .mobile-menu {
+    position: fixed; inset: 0; z-index: 190;
+    background: var(--dark);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+                visibility 0.45s;
+  }
+  .mobile-menu.open {
+    opacity: 1; visibility: visible; pointer-events: all;
+  }
+
+  .mobile-menu-inner {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.2rem; width: 100%;
+  }
+
+  .mobile-menu a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 8vw, 3.8rem);
+    font-weight: 300; color: rgba(250,248,245,0.15);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    padding: 0.3rem 2rem;
+    transition: color 0.3s ease;
+    width: 100%; text-align: center;
+    opacity: 0; transform: translateY(20px);
+    transition: color 0.3s, opacity 0.4s cubic-bezier(0.23,1,0.32,1), transform 0.4s cubic-bezier(0.23,1,0.32,1);
+  }
+  .mobile-menu.open a {
+    opacity: 1; transform: translateY(0);
+  }
+  .mobile-menu.open a:nth-child(1) { transition-delay: 0.07s; }
+  .mobile-menu.open a:nth-child(2) { transition-delay: 0.12s; }
+  .mobile-menu.open a:nth-child(3) { transition-delay: 0.17s; }
+  .mobile-menu.open a:nth-child(4) { transition-delay: 0.22s; }
+  .mobile-menu.open a:nth-child(5) { transition-delay: 0.27s; }
+  .mobile-menu.open a:nth-child(6) { transition-delay: 0.32s; }
+
+  .mobile-menu a:hover { color: var(--accent-light); }
+  .mobile-menu a.active-link { color: rgba(250,248,245,0.85); }
+
+  .mobile-menu-book {
+    margin-top: 2.5rem;
+    display: inline-block; padding: 0.9rem 2.5rem;
+    background: var(--accent) !important;
+    color: var(--cream) !important;
+    font-size: 0.8rem !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-weight: 400 !important;
+    border-radius: 2px !important;
+    font-size: 0.78rem;
+  }
+
+  .mobile-menu-footer {
+    position: absolute; bottom: 2.5rem; left: 0; right: 0;
+    display: flex; justify-content: center; gap: 2rem;
+    opacity: 0; transition: opacity 0.4s 0.35s;
+  }
+  .mobile-menu.open .mobile-menu-footer { opacity: 1; }
+  .mobile-menu-footer a {
+    font-size: 0.72rem !important; letter-spacing: 0.15em !important;
+    text-transform: uppercase !important;
+    color: rgba(255,255,255,0.25) !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-weight: 400 !important;
+    padding: 0 !important;
+    opacity: 1 !important; transform: none !important;
+    transition: color 0.3s !important;
+    width: auto !important;
+  }
+  .mobile-menu-footer a:hover { color: rgba(255,255,255,0.55) !important; }
 
   /* ─── HERO ─── */
   #hero {
@@ -97,8 +189,7 @@
 
   .hero-left {
     display: flex; flex-direction: column; justify-content: center;
-    padding: 5rem 3rem 5rem 4rem;
-    position: relative;
+    padding: 5rem 3rem 5rem 4rem; position: relative;
   }
 
   .hero-tag {
@@ -112,15 +203,13 @@
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(3.2rem, 5vw, 5.5rem);
     font-weight: 300; line-height: 1.08;
-    color: var(--dark); letter-spacing: -0.01em;
-    margin-bottom: 1.8rem;
+    color: var(--dark); letter-spacing: -0.01em; margin-bottom: 1.8rem;
   }
   .hero-left h1 em { font-style: italic; color: var(--accent); }
 
   .hero-desc {
     font-size: 0.95rem; line-height: 1.85;
-    color: var(--text-muted); max-width: 380px;
-    margin-bottom: 2.8rem; font-weight: 300;
+    color: var(--text-muted); max-width: 380px; margin-bottom: 2.8rem; font-weight: 300;
   }
 
   .hero-actions { display: flex; gap: 1.2rem; align-items: center; }
@@ -145,40 +234,16 @@
   .btn-ghost:hover { color: var(--accent); }
   .btn-ghost:hover svg { transform: translateX(4px); }
 
-  .hero-stats {
-    display: flex; gap: 2.5rem; margin-top: 4rem;
-    padding-top: 2.5rem; border-top: 1px solid var(--border);
-  }
-  .stat-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.4rem; font-weight: 500; color: var(--dark); line-height: 1;
-  }
+  .hero-stats { display: flex; gap: 2.5rem; margin-top: 4rem; padding-top: 2.5rem; border-top: 1px solid var(--border); }
+  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 500; color: var(--dark); line-height: 1; }
   .stat-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.3rem; }
 
-  .hero-right {
-    position: relative; overflow: hidden;
-    background: var(--sand);
-  }
+  .hero-right { position: relative; overflow: hidden; background: var(--sand); }
 
-  .hero-img-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    height: 100%; gap: 4px;
-  }
-
-  .hero-img-grid .img-cell {
-    overflow: hidden; position: relative;
-  }
-  .hero-img-grid .img-cell:first-child {
-    grid-row: span 2;
-  }
-
-  .hero-img-grid img {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-    transition: transform 6s ease;
-    filter: brightness(0.92) saturate(0.9);
-  }
+  .hero-img-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; height: 100%; gap: 4px; }
+  .hero-img-grid .img-cell { overflow: hidden; position: relative; }
+  .hero-img-grid .img-cell:first-child { grid-row: span 2; }
+  .hero-img-grid img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 6s ease; filter: brightness(0.92) saturate(0.9); }
   .hero-img-grid .img-cell:hover img { transform: scale(1.04); }
 
   .hero-overlay-badge {
@@ -197,46 +262,18 @@
     display: flex; align-items: center; gap: 0.8rem;
   }
   .section-tag::before { content: ''; display: block; width: 30px; height: 1px; background: var(--accent); }
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.2rem, 3.5vw, 3.5rem);
-    font-weight: 300; line-height: 1.15; color: var(--dark);
-    margin-bottom: 1.2rem;
-  }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 3.5vw, 3.5rem); font-weight: 300; line-height: 1.15; color: var(--dark); margin-bottom: 1.2rem; }
   .section-title em { font-style: italic; color: var(--accent); }
   .section-desc { font-size: 0.93rem; line-height: 1.9; color: var(--text-muted); max-width: 480px; font-weight: 300; }
 
   /* ─── ABOUT ─── */
-  #about {
-    background: var(--warm-white);
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 5rem; align-items: center;
-  }
-
-  .about-img-wrap {
-    position: relative;
-  }
-  .about-main-img {
-    width: 100%; aspect-ratio: 3/4;
-    object-fit: cover; display: block;
-    border-radius: 2px; filter: brightness(0.93) saturate(0.88);
-  }
-  .about-float-img {
-    position: absolute; bottom: -2rem; right: -2rem;
-    width: 55%; aspect-ratio: 4/3;
-    object-fit: cover; border: 6px solid var(--cream);
-    border-radius: 2px; filter: brightness(0.93) saturate(0.88);
-    box-shadow: 0 12px 40px var(--shadow);
-  }
-  .about-badge {
-    position: absolute; top: 2rem; left: -2rem;
-    background: var(--dark); color: var(--cream);
-    padding: 1.2rem; width: 110px; text-align: center;
-    border-radius: 2px;
-  }
+  #about { background: var(--warm-white); display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .about-img-wrap { position: relative; }
+  .about-main-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; border-radius: 2px; filter: brightness(0.93) saturate(0.88); }
+  .about-float-img { position: absolute; bottom: -2rem; right: -2rem; width: 55%; aspect-ratio: 4/3; object-fit: cover; border: 6px solid var(--cream); border-radius: 2px; filter: brightness(0.93) saturate(0.88); box-shadow: 0 12px 40px var(--shadow); }
+  .about-badge { position: absolute; top: 2rem; left: -2rem; background: var(--dark); color: var(--cream); padding: 1.2rem; width: 110px; text-align: center; border-radius: 2px; }
   .about-badge .num { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 500; line-height: 1; }
   .about-badge .lbl { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.75; }
-
   .about-content { padding-right: 1rem; }
   .about-features { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2.5rem; }
   .feature-item { display: flex; flex-direction: column; gap: 0.4rem; }
@@ -261,34 +298,46 @@
     font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
     color: var(--text-muted); transition: all 0.25s; font-family: 'DM Sans', sans-serif;
   }
-  .filter-tab:hover, .filter-tab.active {
-    background: var(--dark); color: var(--cream); border-color: var(--dark);
+  .filter-tab:hover, .filter-tab.active { background: var(--dark); color: var(--cream); border-color: var(--dark); }
+
+  /* ─── GALLERY – fixed desktop masonry ─── */
+  .gallery-masonry {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 10px;   /* small unit rows so items fill naturally */
+    gap: 14px;
   }
 
-  .gallery-masonry {
-    columns: 3; column-gap: 16px;
-  }
   .gallery-item {
-    break-inside: avoid; margin-bottom: 16px;
     position: relative; overflow: hidden; border-radius: 2px;
     cursor: pointer; display: block;
+    /* grid-row-end will be set by JS per item */
   }
+
+  /* Height variations */
+  .gallery-item[data-size="tall"]   { grid-row-end: span 30; }
+  .gallery-item[data-size="medium"] { grid-row-end: span 22; }
+  .gallery-item[data-size="short"]  { grid-row-end: span 17; }
+  .gallery-item[data-size="wide"]   { grid-row-end: span 20; }
+
   .gallery-item img {
-    width: 100%; display: block;
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
     filter: brightness(0.93) saturate(0.88);
     transition: transform 0.6s ease, filter 0.4s ease;
   }
-  .gallery-item:hover img { transform: scale(1.05); filter: brightness(0.78) saturate(1); }
+  .gallery-item:hover img { transform: scale(1.05); filter: brightness(0.75) saturate(1.1); }
+
   .gallery-overlay {
     position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(28,25,22,0.65), transparent);
+    background: linear-gradient(to top, rgba(28,25,22,0.72) 0%, rgba(28,25,22,0.15) 50%, transparent 100%);
     opacity: 0; transition: opacity 0.4s;
     display: flex; flex-direction: column; justify-content: flex-end;
     padding: 1.5rem;
   }
   .gallery-item:hover .gallery-overlay { opacity: 1; }
-  .gallery-overlay h4 { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; }
-  .gallery-overlay span { color: rgba(255,255,255,0.7); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .gallery-overlay h4 { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; margin-bottom: 0.25rem; }
+  .gallery-overlay span { color: rgba(255,255,255,0.65); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; }
 
   /* ─── SERVICES ─── */
   #services { background: var(--dark); color: var(--cream); }
@@ -296,48 +345,23 @@
   #services .section-desc { color: rgba(250,248,245,0.55); max-width: 500px; }
   #services .section-tag { color: var(--accent-light); }
   #services .section-tag::before { background: var(--accent-light); }
-
   .services-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; flex-wrap: wrap; gap: 1.5rem; }
-
   .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); }
-  .service-card {
-    background: var(--dark); padding: 2.5rem;
-    transition: background 0.35s;
-    position: relative; overflow: hidden;
-  }
-  .service-card::before {
-    content: ''; position: absolute; top: 0; left: 0;
-    width: 100%; height: 2px; background: var(--accent);
-    transform: scaleX(0); transform-origin: left;
-    transition: transform 0.4s ease;
-  }
+  .service-card { background: var(--dark); padding: 2.5rem; transition: background 0.35s; position: relative; overflow: hidden; }
+  .service-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
   .service-card:hover { background: #232017; }
   .service-card:hover::before { transform: scaleX(1); }
-
-  .service-num {
-    font-family: 'Cormorant Garamond', serif; font-size: 3.5rem;
-    font-weight: 300; color: rgba(255,255,255,0.08); line-height: 1;
-    margin-bottom: 1.5rem; display: block;
-  }
+  .service-num { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 300; color: rgba(255,255,255,0.08); line-height: 1; margin-bottom: 1.5rem; display: block; }
   .service-icon { font-size: 1.8rem; margin-bottom: 1rem; }
-  .service-card h3 {
-    font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;
-    font-weight: 400; color: var(--cream); margin-bottom: 0.8rem;
-  }
+  .service-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--cream); margin-bottom: 0.8rem; }
   .service-card p { font-size: 0.83rem; line-height: 1.8; color: rgba(250,248,245,0.5); margin-bottom: 1.5rem; }
   .service-price { font-size: 1.1rem; color: var(--accent-light); font-weight: 400; font-family: 'Cormorant Garamond', serif; }
-  .service-link {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: rgba(255,255,255,0.4); text-decoration: none; margin-top: 1rem;
-    transition: color 0.3s;
-  }
+  .service-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); text-decoration: none; margin-top: 1rem; transition: color 0.3s; }
   .service-card:hover .service-link { color: var(--accent-light); }
 
   /* ─── BOOKING ─── */
   #booking { background: var(--warm-white); }
   .booking-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: start; }
-
   .booking-info h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; color: var(--dark); margin: 2rem 0 0.5rem; }
   .booking-info p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
   .booking-contact { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
@@ -345,21 +369,12 @@
   .contact-row .icon { width: 38px; height: 38px; background: var(--sand); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
   .contact-row span { font-size: 0.85rem; color: var(--text-muted); }
   .contact-row strong { display: block; font-size: 0.88rem; color: var(--dark); font-weight: 500; }
-
   .booking-form { background: var(--cream); padding: 3rem; border-radius: 2px; box-shadow: 0 4px 40px var(--shadow); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
   .form-group { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.4rem; }
   .form-group label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); font-weight: 400; }
-  .form-group input, .form-group select, .form-group textarea {
-    border: 1px solid var(--border); background: var(--warm-white);
-    padding: 0.85rem 1rem; font-size: 0.9rem; color: var(--text);
-    font-family: 'DM Sans', sans-serif; border-radius: 2px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    outline: none; appearance: none;
-  }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(184,134,11,0.1);
-  }
+  .form-group input, .form-group select, .form-group textarea { border: 1px solid var(--border); background: var(--warm-white); padding: 0.85rem 1rem; font-size: 0.9rem; color: var(--text); font-family: 'DM Sans', sans-serif; border-radius: 2px; transition: border-color 0.3s, box-shadow 0.3s; outline: none; appearance: none; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(184,134,11,0.1); }
   .form-group textarea { resize: vertical; min-height: 110px; }
   .form-submit { width: 100%; padding: 1.1rem; background: var(--dark); color: var(--cream); border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; border-radius: 2px; transition: background 0.35s; }
   .form-submit:hover { background: var(--accent); }
@@ -371,13 +386,8 @@
   .testimonials-header .section-tag { justify-content: center; }
   .testimonials-header .section-tag::before { display: none; }
   .testimonials-header .section-tag::after { content: ''; display: block; width: 30px; height: 1px; background: var(--accent); }
-
   .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-  .testimonial-card {
-    background: var(--warm-white); padding: 2.5rem;
-    border-radius: 2px; text-align: left; position: relative;
-    border: 1px solid var(--border); transition: box-shadow 0.3s;
-  }
+  .testimonial-card { background: var(--warm-white); padding: 2.5rem; border-radius: 2px; text-align: left; position: relative; border: 1px solid var(--border); transition: box-shadow 0.3s; }
   .testimonial-card:hover { box-shadow: 0 8px 40px var(--shadow); }
   .quote-mark { font-family: 'Cormorant Garamond', serif; font-size: 5rem; color: var(--tan); line-height: 0.5; margin-bottom: 1rem; display: block; }
   .testimonial-card p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: var(--charcoal); line-height: 1.7; margin-bottom: 1.5rem; font-weight: 400; }
@@ -389,15 +399,9 @@
   .stars { color: var(--accent); font-size: 0.85rem; letter-spacing: 2px; margin-bottom: 1rem; }
 
   /* ─── CONTACT ─── */
-  #contact {
-    background: var(--charcoal); color: var(--cream);
-    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
-  }
+  #contact { background: var(--charcoal); color: var(--cream); display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
   .contact-left { padding: 7rem 4rem; }
-  .contact-right {
-    background: var(--dark); padding: 7rem 4rem;
-    display: flex; flex-direction: column; justify-content: center;
-  }
+  .contact-right { background: var(--dark); padding: 7rem 4rem; display: flex; flex-direction: column; justify-content: center; }
   #contact .section-tag { color: var(--accent-light); }
   #contact .section-tag::before { background: var(--accent-light); }
   #contact .section-title { color: var(--cream); }
@@ -408,27 +412,14 @@
   .cl-text strong { display: block; font-size: 0.85rem; color: var(--cream); font-weight: 400; }
   .cl-text span { font-size: 0.78rem; color: rgba(255,255,255,0.4); }
   .social-links { display: flex; gap: 1rem; margin-top: 2.5rem; }
-  .social-btn {
-    width: 42px; height: 42px; border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9rem;
-    transition: all 0.3s;
-  }
+  .social-btn { width: 42px; height: 42px; border: 1px solid rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9rem; transition: all 0.3s; }
   .social-btn:hover { border-color: var(--accent); color: var(--accent-light); }
-  .map-placeholder {
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 2px; height: 220px; display: flex; align-items: center; justify-content: center;
-    margin-top: 2rem; flex-direction: column; gap: 0.5rem;
-  }
+  .map-placeholder { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 2px; height: 220px; display: flex; align-items: center; justify-content: center; margin-top: 2rem; flex-direction: column; gap: 0.5rem; }
   .map-placeholder span { color: rgba(255,255,255,0.25); font-size: 2rem; }
   .map-placeholder p { color: rgba(255,255,255,0.3); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
 
   /* ─── FOOTER ─── */
-  footer {
-    background: var(--dark); padding: 2.5rem 4rem;
-    display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid rgba(255,255,255,0.06);
-  }
+  footer { background: var(--dark); padding: 2.5rem 4rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); }
   footer .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--cream); font-weight: 400; }
   footer .logo span { font-style: italic; color: var(--accent-light); }
   footer p { font-size: 0.75rem; color: rgba(255,255,255,0.3); letter-spacing: 0.05em; }
@@ -437,12 +428,7 @@
   .footer-links a:hover { color: var(--accent-light); }
 
   /* ─── LIGHTBOX ─── */
-  .lightbox {
-    position: fixed; inset: 0; z-index: 1000;
-    background: rgba(28,25,22,0.95); display: none;
-    align-items: center; justify-content: center;
-    backdrop-filter: blur(8px);
-  }
+  .lightbox { position: fixed; inset: 0; z-index: 1000; background: rgba(28,25,22,0.96); display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
   .lightbox.active { display: flex; }
   .lightbox img { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 2px; }
   .lightbox-close { position: absolute; top: 2rem; right: 2rem; background: none; border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
@@ -452,16 +438,14 @@
   .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
   .fade-up.visible { opacity: 1; transform: translateY(0); }
 
-  /* ─── MOBILE NAV ─── */
-  .mobile-menu {
-    display: none; position: fixed; inset: 0; z-index: 99;
-    background: var(--cream); flex-direction: column;
-    align-items: center; justify-content: center; gap: 2.5rem;
-    padding-top: 80px;
-  }
-  .mobile-menu.open { display: flex; }
-  .mobile-menu a { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 300; color: var(--dark); text-decoration: none; transition: color 0.3s; }
-  .mobile-menu a:hover { color: var(--accent); }
+  /* ─── SCROLL TO TOP ─── */
+  .scroll-top { position: fixed; bottom: 2rem; right: 2rem; z-index: 50; width: 44px; height: 44px; background: var(--dark); color: var(--cream); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; opacity: 0; transform: translateY(10px); transition: all 0.35s; box-shadow: 0 4px 20px var(--shadow); }
+  .scroll-top.visible { opacity: 1; transform: translateY(0); }
+  .scroll-top:hover { background: var(--accent); }
+
+  /* WhatsApp Float */
+  .wa-float { position: fixed; bottom: 2rem; left: 2rem; z-index: 50; width: 50px; height: 50px; background: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; text-decoration: none; box-shadow: 0 4px 20px rgba(37,211,102,0.35); transition: transform 0.3s, box-shadow 0.3s; }
+  .wa-float:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.5); }
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 1024px) {
@@ -471,12 +455,12 @@
     .hamburger { display: flex; }
     section { padding: 5rem 2rem; }
     #hero { grid-template-columns: 1fr; min-height: auto; }
-    .hero-right { height: 60vw; }
+    .hero-right { height: 70vw; }
     .hero-left { padding: 5rem 2rem 3rem; }
     #about { grid-template-columns: 1fr; padding: 5rem 2rem; gap: 3rem; }
     .about-float-img { display: none; }
     .about-badge { left: 1rem; }
-    .services-grid { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr 1fr; }
     .services-header { flex-direction: column; align-items: flex-start; }
     .booking-grid { grid-template-columns: 1fr; gap: 3rem; }
     .testimonials-grid { grid-template-columns: 1fr; }
@@ -486,7 +470,7 @@
     .portfolio-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
     footer { flex-direction: column; gap: 1.2rem; text-align: center; padding: 2rem; }
     .footer-links { flex-wrap: wrap; justify-content: center; }
-    .gallery-masonry { columns: 2; }
+    .gallery-masonry { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 600px) {
@@ -494,34 +478,16 @@
     .hero-stats { gap: 1.5rem; }
     .form-row { grid-template-columns: 1fr; }
     .booking-form { padding: 2rem 1.5rem; }
-    .gallery-masonry { columns: 1; }
+    .gallery-masonry { grid-template-columns: 1fr; }
+    .gallery-item[data-size="tall"],
+    .gallery-item[data-size="medium"],
+    .gallery-item[data-size="short"],
+    .gallery-item[data-size="wide"] { grid-row-end: span 22; }
     .hero-actions { flex-direction: column; align-items: flex-start; }
     .about-features { grid-template-columns: 1fr; }
     .services-grid { grid-template-columns: 1fr; }
     .social-links { flex-wrap: wrap; }
   }
-
-  /* ─── SCROLL TO TOP ─── */
-  .scroll-top {
-    position: fixed; bottom: 2rem; right: 2rem; z-index: 50;
-    width: 44px; height: 44px; background: var(--dark); color: var(--cream);
-    border: none; border-radius: 50%; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem; opacity: 0; transform: translateY(10px);
-    transition: all 0.35s; box-shadow: 0 4px 20px var(--shadow);
-  }
-  .scroll-top.visible { opacity: 1; transform: translateY(0); }
-  .scroll-top:hover { background: var(--accent); }
-
-  /* WhatsApp Float */
-  .wa-float {
-    position: fixed; bottom: 2rem; left: 2rem; z-index: 50;
-    width: 50px; height: 50px; background: #25D366; color: #fff;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 1.5rem; text-decoration: none; box-shadow: 0 4px 20px rgba(37,211,102,0.35);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .wa-float:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.5); }
 </style>
 </head>
 <body>
@@ -537,19 +503,25 @@
     <li><a href="#contact">Contact</a></li>
     <li><a href="#booking" class="nav-cta">Book Now</a></li>
   </ul>
-  <button class="hamburger" id="hamburger" aria-label="Menu">
+  <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#about" onclick="closeMobile()">About</a>
-  <a href="#portfolio" onclick="closeMobile()">Portfolio</a>
-  <a href="#services" onclick="closeMobile()">Services</a>
-  <a href="#testimonials" onclick="closeMobile()">Reviews</a>
-  <a href="#booking" onclick="closeMobile()">Book a Session</a>
-  <a href="#contact" onclick="closeMobile()">Contact</a>
+<!-- MODERN FULLSCREEN MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true">
+  <div class="mobile-menu-inner">
+    <a href="#about"        onclick="closeMobile()">About</a>
+    <a href="#portfolio"    onclick="closeMobile()">Portfolio</a>
+    <a href="#services"     onclick="closeMobile()">Services</a>
+    <a href="#testimonials" onclick="closeMobile()">Reviews</a>
+    <a href="#contact"      onclick="closeMobile()">Contact</a>
+    <a href="#booking"      onclick="closeMobile()" class="mobile-menu-book">Book a Session</a>
+  </div>
+  <div class="mobile-menu-footer">
+    <a href="tel:+94779506873">+94 77 950 6873</a>
+    <a href="mailto:hello@pixorstudio.com">hello@pixorstudio.com</a>
+  </div>
 </div>
 
 <!-- HERO -->
@@ -566,18 +538,9 @@
       </a>
     </div>
     <div class="hero-stats">
-      <div>
-        <div class="stat-num">850+</div>
-        <div class="stat-label">Sessions Shot</div>
-      </div>
-      <div>
-        <div class="stat-num">12</div>
-        <div class="stat-label">Years of Craft</div>
-      </div>
-      <div>
-        <div class="stat-num">98%</div>
-        <div class="stat-label">Happy Clients</div>
-      </div>
+      <div><div class="stat-num">850+</div><div class="stat-label">Sessions Shot</div></div>
+      <div><div class="stat-num">12</div><div class="stat-label">Years of Craft</div></div>
+      <div><div class="stat-num">98%</div><div class="stat-label">Happy Clients</div></div>
     </div>
   </div>
   <div class="hero-right">
@@ -604,10 +567,7 @@
   <div class="about-img-wrap fade-up">
     <img class="about-main-img" src="https://images.unsplash.com/photo-1500051638674-ff996a0ec29e?w=700&q=80" alt="Photographer at work">
     <img class="about-float-img" src="https://images.unsplash.com/photo-1554080353-a576cf803bda?w=500&q=80" alt="Camera detail">
-    <div class="about-badge">
-      <div class="num">12</div>
-      <div class="lbl">Years Experience</div>
-    </div>
+    <div class="about-badge"><div class="num">12</div><div class="lbl">Years Experience</div></div>
   </div>
   <div class="about-content fade-up">
     <div class="section-tag">Our Story</div>
@@ -615,30 +575,12 @@
     <p class="section-desc">Pixor Studio was born from a passion for capturing the raw, unscripted beauty of life. Our team of dedicated photographers blends technical mastery with creative intuition to deliver images that move people.</p>
     <p class="section-desc" style="margin-top:1rem">Whether it's the quiet glance between newlyweds, the laughter at a family gathering, or the sharp lines of a commercial product — we see it all through a storyteller's lens.</p>
     <div class="about-features">
-      <div class="feature-item">
-        <div class="feature-icon">📷</div>
-        <strong>Pro Equipment</strong>
-        <p>Full-frame mirrorless cameras with cinema-grade lenses for every shoot.</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">🎨</div>
-        <strong>Expert Editing</strong>
-        <p>Signature retouching style that preserves natural tones and emotion.</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">⚡</div>
-        <strong>Fast Delivery</strong>
-        <p>Edited gallery delivered within 7–14 days via private online album.</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">🤝</div>
-        <strong>Personal Care</strong>
-        <p>We guide you through every step — planning, posing, and beyond.</p>
-      </div>
+      <div class="feature-item"><div class="feature-icon">📷</div><strong>Pro Equipment</strong><p>Full-frame mirrorless cameras with cinema-grade lenses for every shoot.</p></div>
+      <div class="feature-item"><div class="feature-icon">🎨</div><strong>Expert Editing</strong><p>Signature retouching style that preserves natural tones and emotion.</p></div>
+      <div class="feature-item"><div class="feature-icon">⚡</div><strong>Fast Delivery</strong><p>Edited gallery delivered within 7–14 days via private online album.</p></div>
+      <div class="feature-item"><div class="feature-icon">🤝</div><strong>Personal Care</strong><p>We guide you through every step — planning, posing, and beyond.</p></div>
     </div>
-    <div style="margin-top:2.5rem">
-      <a href="#booking" class="btn-primary">Start Your Story</a>
-    </div>
+    <div style="margin-top:2.5rem"><a href="#booking" class="btn-primary">Start Your Story</a></div>
   </div>
 </section>
 
@@ -658,40 +600,40 @@
     <button class="filter-tab" data-filter="event">Events</button>
     <button class="filter-tab" data-filter="commercial">Commercial</button>
   </div>
-  <div class="gallery-masonry" id="gallery">
-    <div class="gallery-item" data-category="wedding" onclick="openLightbox(this)">
+  <div class="gallery-masonry fade-up" id="gallery">
+    <div class="gallery-item" data-category="wedding" data-size="tall" onclick="openLightbox(this)">
       <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80" alt="Wedding">
       <div class="gallery-overlay"><h4>Golden Vows</h4><span>Wedding</span></div>
     </div>
-    <div class="gallery-item" data-category="portrait" onclick="openLightbox(this)">
+    <div class="gallery-item" data-category="portrait" data-size="medium" onclick="openLightbox(this)">
       <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80" alt="Portrait">
       <div class="gallery-overlay"><h4>Quiet Light</h4><span>Portrait</span></div>
     </div>
-    <div class="gallery-item" data-category="event" onclick="openLightbox(this)">
+    <div class="gallery-item" data-category="event" data-size="short" onclick="openLightbox(this)">
       <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80" alt="Event">
       <div class="gallery-overlay"><h4>Electric Night</h4><span>Event</span></div>
     </div>
-    <div class="gallery-item" data-category="wedding" onclick="openLightbox(this)">
+    <div class="gallery-item" data-category="wedding" data-size="short" onclick="openLightbox(this)">
       <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80" alt="Wedding">
       <div class="gallery-overlay"><h4>Forever After</h4><span>Wedding</span></div>
     </div>
-    <div class="gallery-item" data-category="commercial" onclick="openLightbox(this)">
+    <div class="gallery-item" data-category="commercial" data-size="tall" onclick="openLightbox(this)">
       <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80" alt="Commercial">
       <div class="gallery-overlay"><h4>Brand Identity</h4><span>Commercial</span></div>
     </div>
-    <div class="gallery-item" data-category="portrait" onclick="openLightbox(this)">
+    <div class="gallery-item" data-category="portrait" data-size="medium" onclick="openLightbox(this)">
       <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80" alt="Portrait">
       <div class="gallery-overlay"><h4>The Thinker</h4><span>Portrait</span></div>
     </div>
-    <div class="gallery-item" data-category="event" onclick="openLightbox(this)">
+    <div class="gallery-item" data-category="event" data-size="medium" onclick="openLightbox(this)">
       <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80" alt="Event">
       <div class="gallery-overlay"><h4>Celebrate</h4><span>Event</span></div>
     </div>
-    <div class="gallery-item" data-category="portrait" onclick="openLightbox(this)">
+    <div class="gallery-item" data-category="portrait" data-size="short" onclick="openLightbox(this)">
       <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=600&q=80" alt="Portrait">
       <div class="gallery-overlay"><h4>Golden Hour</h4><span>Portrait</span></div>
     </div>
-    <div class="gallery-item" data-category="wedding" onclick="openLightbox(this)">
+    <div class="gallery-item" data-category="wedding" data-size="medium" onclick="openLightbox(this)">
       <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80" alt="Wedding">
       <div class="gallery-overlay"><h4>First Dance</h4><span>Wedding</span></div>
     </div>
@@ -708,54 +650,12 @@
     <p class="section-desc">From intimate portraits to grand celebrations, every package is crafted with care and a commitment to excellence.</p>
   </div>
   <div class="services-grid fade-up">
-    <div class="service-card">
-      <span class="service-num">01</span>
-      <div class="service-icon">💍</div>
-      <h3>Wedding Photography</h3>
-      <p>Timeless coverage of your most important day — from getting ready to the final dance. Full-day packages available.</p>
-      <div class="service-price">From $1,200</div>
-      <a href="#booking" class="service-link">Book This →</a>
-    </div>
-    <div class="service-card">
-      <span class="service-num">02</span>
-      <div class="service-icon">🌸</div>
-      <h3>Portrait Sessions</h3>
-      <p>Individual, couple, or family portraits in studio or on location. Relaxed and guided experience for all ages.</p>
-      <div class="service-price">From $250</div>
-      <a href="#booking" class="service-link">Book This →</a>
-    </div>
-    <div class="service-card">
-      <span class="service-num">03</span>
-      <div class="service-icon">🎉</div>
-      <h3>Event Coverage</h3>
-      <p>Corporate events, birthday parties, graduations, and more. Candid and editorial coverage of your special events.</p>
-      <div class="service-price">From $400</div>
-      <a href="#booking" class="service-link">Book This →</a>
-    </div>
-    <div class="service-card">
-      <span class="service-num">04</span>
-      <div class="service-icon">📦</div>
-      <h3>Commercial & Product</h3>
-      <p>High-end product photography and brand imagery that converts browsers into buyers. Studio or lifestyle shoots.</p>
-      <div class="service-price">From $600</div>
-      <a href="#booking" class="service-link">Book This →</a>
-    </div>
-    <div class="service-card">
-      <span class="service-num">05</span>
-      <div class="service-icon">👶</div>
-      <h3>Newborn & Family</h3>
-      <p>Gentle and safe newborn sessions celebrating life's newest arrivals. Family packages also available.</p>
-      <div class="service-price">From $350</div>
-      <a href="#booking" class="service-link">Book This →</a>
-    </div>
-    <div class="service-card">
-      <span class="service-num">06</span>
-      <div class="service-icon">🏢</div>
-      <h3>Corporate Headshots</h3>
-      <p>Professional headshots for individuals and teams. Modern, polished results perfect for LinkedIn and company profiles.</p>
-      <div class="service-price">From $180</div>
-      <a href="#booking" class="service-link">Book This →</a>
-    </div>
+    <div class="service-card"><span class="service-num">01</span><div class="service-icon">💍</div><h3>Wedding Photography</h3><p>Timeless coverage of your most important day — from getting ready to the final dance. Full-day packages available.</p><div class="service-price">From $1,200</div><a href="#booking" class="service-link">Book This →</a></div>
+    <div class="service-card"><span class="service-num">02</span><div class="service-icon">🌸</div><h3>Portrait Sessions</h3><p>Individual, couple, or family portraits in studio or on location. Relaxed and guided experience for all ages.</p><div class="service-price">From $250</div><a href="#booking" class="service-link">Book This →</a></div>
+    <div class="service-card"><span class="service-num">03</span><div class="service-icon">🎉</div><h3>Event Coverage</h3><p>Corporate events, birthday parties, graduations, and more. Candid and editorial coverage of your special events.</p><div class="service-price">From $400</div><a href="#booking" class="service-link">Book This →</a></div>
+    <div class="service-card"><span class="service-num">04</span><div class="service-icon">📦</div><h3>Commercial & Product</h3><p>High-end product photography and brand imagery that converts browsers into buyers. Studio or lifestyle shoots.</p><div class="service-price">From $600</div><a href="#booking" class="service-link">Book This →</a></div>
+    <div class="service-card"><span class="service-num">05</span><div class="service-icon">👶</div><h3>Newborn & Family</h3><p>Gentle and safe newborn sessions celebrating life's newest arrivals. Family packages also available.</p><div class="service-price">From $350</div><a href="#booking" class="service-link">Book This →</a></div>
+    <div class="service-card"><span class="service-num">06</span><div class="service-icon">🏢</div><h3>Corporate Headshots</h3><p>Professional headshots for individuals and teams. Modern, polished results perfect for LinkedIn and company profiles.</p><div class="service-price">From $180</div><a href="#booking" class="service-link">Book This →</a></div>
   </div>
 </section>
 
@@ -771,45 +671,23 @@
       <h3>Flexible Scheduling</h3>
       <p>We shoot 7 days a week, including evenings and golden hour sessions. Custom timing is available upon request.</p>
       <div class="booking-contact">
-        <div class="contact-row">
-          <div class="icon">📞</div>
-          <div><strong>+94 77 950 6873</strong><span>Mon–Sat, 9am–6pm</span></div>
-        </div>
-        <div class="contact-row">
-          <div class="icon">✉️</div>
-          <div><strong>hello@pixorstudio.com</strong><span>We reply within 24 hours</span></div>
-        </div>
-        <div class="contact-row">
-          <div class="icon">📍</div>
-          <div><strong>Negombo, Western Province</strong><span>Sri Lanka</span></div>
-        </div>
+        <div class="contact-row"><div class="icon">📞</div><div><strong>+94 77 950 6873</strong><span>Mon–Sat, 9am–6pm</span></div></div>
+        <div class="contact-row"><div class="icon">✉️</div><div><strong>hello@pixorstudio.com</strong><span>We reply within 24 hours</span></div></div>
+        <div class="contact-row"><div class="icon">📍</div><div><strong>Negombo, Western Province</strong><span>Sri Lanka</span></div></div>
       </div>
     </div>
     <div class="fade-up">
       <div class="booking-form">
         <div class="form-row">
-          <div class="form-group">
-            <label>First Name</label>
-            <input type="text" placeholder="Jane">
-          </div>
-          <div class="form-group">
-            <label>Last Name</label>
-            <input type="text" placeholder="Doe">
-          </div>
+          <div class="form-group"><label>First Name</label><input type="text" placeholder="Jane"></div>
+          <div class="form-group"><label>Last Name</label><input type="text" placeholder="Doe"></div>
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" placeholder="jane@example.com">
-          </div>
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input type="tel" placeholder="+94 77 000 0000">
-          </div>
+          <div class="form-group"><label>Email Address</label><input type="email" placeholder="jane@example.com"></div>
+          <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+94 77 000 0000"></div>
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Service</label>
+          <div class="form-group"><label>Service</label>
             <select>
               <option value="">Select a service...</option>
               <option>Wedding Photography</option>
@@ -820,16 +698,10 @@
               <option>Corporate Headshots</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Preferred Date</label>
-            <input type="date">
-          </div>
+          <div class="form-group"><label>Preferred Date</label><input type="date"></div>
         </div>
-        <div class="form-group">
-          <label>Additional Notes</label>
-          <textarea placeholder="Tell us about your vision, location preference, or any special requirements..."></textarea>
-        </div>
-        <button type="submit" class="form-submit">Send Booking Request</button>
+        <div class="form-group"><label>Additional Notes</label><textarea placeholder="Tell us about your vision, location preference, or any special requirements..."></textarea></div>
+        <button type="button" class="form-submit">Send Booking Request</button>
       </div>
     </div>
   </div>
@@ -847,28 +719,19 @@
       <div class="stars">★★★★★</div>
       <span class="quote-mark">"</span>
       <p>Pixor Studio captured our wedding day beautifully. Every photo tells a story — we still look through the album every anniversary.</p>
-      <div class="testi-author">
-        <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="Sarah"></div>
-        <div><div class="testi-name">Sarah & Michael</div><div class="testi-role">Wedding Clients, 2024</div></div>
-      </div>
+      <div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="Sarah"></div><div><div class="testi-name">Sarah & Michael</div><div class="testi-role">Wedding Clients, 2024</div></div></div>
     </div>
     <div class="testimonial-card">
       <div class="stars">★★★★★</div>
       <span class="quote-mark">"</span>
       <p>Our family portrait session was the most fun we've had in years. The photographer made everyone so comfortable — even our 3-year-old cooperated!</p>
-      <div class="testi-author">
-        <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="David"></div>
-        <div><div class="testi-name">David Fernandez</div><div class="testi-role">Portrait Client, 2025</div></div>
-      </div>
+      <div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="David"></div><div><div class="testi-name">David Fernandez</div><div class="testi-role">Portrait Client, 2025</div></div></div>
     </div>
     <div class="testimonial-card">
       <div class="stars">★★★★★</div>
       <span class="quote-mark">"</span>
       <p>The product photos transformed our entire brand. Sales increased 40% after we updated our website with Pixor's commercial work.</p>
-      <div class="testi-author">
-        <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="Amara"></div>
-        <div><div class="testi-name">Amara Silva</div><div class="testi-role">Commercial Client, 2025</div></div>
-      </div>
+      <div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="Amara"></div><div><div class="testi-name">Amara Silva</div><div class="testi-role">Commercial Client, 2025</div></div></div>
     </div>
   </div>
 </section>
@@ -880,18 +743,9 @@
     <h2 class="section-title">Let's Talk<br><em>Photography</em></h2>
     <p style="color:rgba(250,248,245,0.5); font-size:0.92rem; line-height:1.8; margin-top:1rem; max-width:380px;">Have questions? Want to discuss a custom package? We'd love to hear from you. Reach out through any of the channels below.</p>
     <div class="contact-links">
-      <a href="tel:+94779506873" class="contact-link-row">
-        <div class="cl-icon">📞</div>
-        <div class="cl-text"><strong>+94 77 950 6873</strong><span>Call us anytime during business hours</span></div>
-      </a>
-      <a href="mailto:hello@pixorstudio.com" class="contact-link-row">
-        <div class="cl-icon">✉️</div>
-        <div class="cl-text"><strong>hello@pixorstudio.com</strong><span>We reply within 24 hours</span></div>
-      </a>
-      <a href="#" class="contact-link-row">
-        <div class="cl-icon">📍</div>
-        <div class="cl-text"><strong>Negombo, Sri Lanka</strong><span>Studio visits by appointment</span></div>
-      </a>
+      <a href="tel:+94779506873" class="contact-link-row"><div class="cl-icon">📞</div><div class="cl-text"><strong>+94 77 950 6873</strong><span>Call us anytime during business hours</span></div></a>
+      <a href="mailto:hello@pixorstudio.com" class="contact-link-row"><div class="cl-icon">✉️</div><div class="cl-text"><strong>hello@pixorstudio.com</strong><span>We reply within 24 hours</span></div></a>
+      <a href="#" class="contact-link-row"><div class="cl-icon">📍</div><div class="cl-text"><strong>Negombo, Sri Lanka</strong><span>Studio visits by appointment</span></div></a>
     </div>
     <div class="social-links">
       <a href="#" class="social-btn" title="Instagram">📸</a>
@@ -904,23 +758,11 @@
     <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:400; color:var(--cream); margin-bottom:0.5rem;">Studio Hours</h3>
     <p style="color:rgba(255,255,255,0.4); font-size:0.85rem; margin-bottom:2rem;">Walk-ins welcome during open hours</p>
     <div style="display:flex; flex-direction:column; gap:0.8rem;">
-      <div style="display:flex; justify-content:space-between; padding-bottom:0.8rem; border-bottom:1px solid rgba(255,255,255,0.06);">
-        <span style="color:rgba(255,255,255,0.55); font-size:0.85rem;">Monday – Friday</span>
-        <span style="color:var(--cream); font-size:0.85rem;">9:00 AM – 6:00 PM</span>
-      </div>
-      <div style="display:flex; justify-content:space-between; padding-bottom:0.8rem; border-bottom:1px solid rgba(255,255,255,0.06);">
-        <span style="color:rgba(255,255,255,0.55); font-size:0.85rem;">Saturday</span>
-        <span style="color:var(--cream); font-size:0.85rem;">9:00 AM – 4:00 PM</span>
-      </div>
-      <div style="display:flex; justify-content:space-between;">
-        <span style="color:rgba(255,255,255,0.55); font-size:0.85rem;">Sunday</span>
-        <span style="color:var(--accent-light); font-size:0.85rem;">By Appointment</span>
-      </div>
+      <div style="display:flex; justify-content:space-between; padding-bottom:0.8rem; border-bottom:1px solid rgba(255,255,255,0.06);"><span style="color:rgba(255,255,255,0.55); font-size:0.85rem;">Monday – Friday</span><span style="color:var(--cream); font-size:0.85rem;">9:00 AM – 6:00 PM</span></div>
+      <div style="display:flex; justify-content:space-between; padding-bottom:0.8rem; border-bottom:1px solid rgba(255,255,255,0.06);"><span style="color:rgba(255,255,255,0.55); font-size:0.85rem;">Saturday</span><span style="color:var(--cream); font-size:0.85rem;">9:00 AM – 4:00 PM</span></div>
+      <div style="display:flex; justify-content:space-between;"><span style="color:rgba(255,255,255,0.55); font-size:0.85rem;">Sunday</span><span style="color:var(--accent-light); font-size:0.85rem;">By Appointment</span></div>
     </div>
-    <div class="map-placeholder" style="margin-top:2.5rem;">
-      <span>🗺️</span>
-      <p>Negombo, Western Province, LK</p>
-    </div>
+    <div class="map-placeholder" style="margin-top:2.5rem;"><span>🗺️</span><p>Negombo, Western Province, LK</p></div>
     <a href="#booking" class="btn-primary" style="margin-top:2rem; display:inline-block; text-align:center; width:100%;">Book a Session Online</a>
   </div>
 </section>
@@ -946,24 +788,44 @@
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <!-- WHATSAPP FLOAT -->
-<a href="https://wa.me/94771234567?text=Hi%20Pixor%20Studio%2C%20I'd%20like%20to%20book%20a%20session!" class="wa-float" target="_blank" title="Chat on WhatsApp">💬</a>
+<a href="https://wa.me/94779506873?text=Hi%20Pixor%20Studio%2C%20I'd%20like%20to%20book%20a%20session!" class="wa-float" target="_blank" title="Chat on WhatsApp">💬</a>
 
 <script>
-  // Navbar scroll
-  const navbar = document.getElementById('navbar');
+  /* ── Navbar scroll ── */
+  const navbar   = document.getElementById('navbar');
   const scrollTop = document.getElementById('scrollTop');
   window.addEventListener('scroll', () => {
     navbar.classList.toggle('scrolled', window.scrollY > 60);
     scrollTop.classList.toggle('visible', window.scrollY > 400);
   });
 
-  // Hamburger
-  const hamburger = document.getElementById('hamburger');
+  /* ── Hamburger / mobile menu ── */
+  const hamburger  = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobileMenu');
-  hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
-  function closeMobile() { mobileMenu.classList.remove('open'); }
+  let menuOpen = false;
 
-  // Fade-up observer
+  function openMobile() {
+    menuOpen = true;
+    hamburger.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    mobileMenu.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMobile() {
+    menuOpen = false;
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  hamburger.addEventListener('click', () => menuOpen ? closeMobile() : openMobile());
+
+  /* Close on ESC */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { if (menuOpen) closeMobile(); else closeLightbox(); }
+  });
+
+  /* ── Fade-up observer ── */
   const fadeEls = document.querySelectorAll('.fade-up');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((e, i) => {
@@ -973,24 +835,23 @@
         observer.unobserve(e.target);
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.1 });
   fadeEls.forEach(el => observer.observe(el));
 
-  // Gallery filter
+  /* ── Gallery filter ── */
   document.querySelectorAll('.filter-tab').forEach(tab => {
-    tab.addEventListener('click', function() {
+    tab.addEventListener('click', function () {
       document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
       this.classList.add('active');
       const filter = this.dataset.filter;
       document.querySelectorAll('.gallery-item').forEach(item => {
         const show = filter === 'all' || item.dataset.category === filter;
         item.style.display = show ? 'block' : 'none';
-        item.style.opacity = show ? '1' : '0';
       });
     });
   });
 
-  // Lightbox
+  /* ── Lightbox ── */
   function openLightbox(el) {
     const img = el.querySelector('img');
     document.getElementById('lightboxImg').src = img.src;
@@ -999,32 +860,28 @@
   }
   function closeLightbox() {
     document.getElementById('lightbox').classList.remove('active');
-    document.body.style.overflow = '';
+    if (!menuOpen) document.body.style.overflow = '';
   }
-  document.getElementById('lightbox').addEventListener('click', function(e) {
+  document.getElementById('lightbox').addEventListener('click', function (e) {
     if (e.target === this) closeLightbox();
   });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-  // Booking form
-  document.querySelector('.form-submit').addEventListener('click', function(e) {
+  /* ── Booking form ── */
+  document.querySelector('.form-submit').addEventListener('click', function () {
     const inputs = document.querySelectorAll('.booking-form input, .booking-form select');
     let valid = true;
-    inputs.forEach(i => { if(!i.value.trim()) valid = false; });
+    inputs.forEach(i => { if (!i.value.trim()) valid = false; });
     if (!valid) { alert('Please fill in all required fields.'); return; }
     this.textContent = '✓ Request Sent!';
     this.style.background = 'var(--accent)';
     setTimeout(() => { this.textContent = 'Send Booking Request'; this.style.background = ''; }, 3500);
   });
 
-  // Smooth scroll for all nav links
+  /* ── Smooth scroll ── */
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       const target = document.querySelector(a.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
     });
   });
 </script>
